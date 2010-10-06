@@ -77,7 +77,7 @@ class SyslogLogger
   ##
   # The version of SyslogLogger you are using.
 
-  VERSION = '1.4.0'
+  VERSION = '1.4.1'
 
   ##
   # Maps Logger warning types to syslog(3) warning types.
@@ -142,11 +142,12 @@ class SyslogLogger
   #
   # Due to the way syslog works, only one program name may be chosen.
 
-  def initialize(program_name = 'rails')
-    @level = Logger::DEBUG
+  def initialize(program_name = $0, options = Syslog::LOG_PID | Syslog::LOG_CONS, facility = nil)
+    options = options || (Syslog::LOG_PID | Syslog::LOG_CONS)
+    @level = Logger::INFO
 
     return if defined? SYSLOG
-    self.class.const_set :SYSLOG, Syslog.open(program_name)
+    self.class.const_set :SYSLOG, Syslog.open(program_name, options, facility)
   end
 
   ##
